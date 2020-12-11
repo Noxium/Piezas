@@ -22,6 +22,12 @@
 **/
 Piezas::Piezas()
 {
+  for(int i = 0; i < BOARD_ROWS; i++) {
+    for(int j = 0; j < BOARD_COLS; j++) {
+      board[i][j] = Blank;
+    }
+  }
+  turn = X;
 }
 
 /**
@@ -30,6 +36,12 @@ Piezas::Piezas()
 **/
 void Piezas::reset()
 {
+  for(int i = 0; i < BOARD_ROWS; i++) {
+    for(int j = 0; j < BOARD_COLS; j++) {
+      board[i][j] = Blank;
+    }
+  }
+  turn = X;
 }
 
 /**
@@ -42,7 +54,25 @@ void Piezas::reset()
 **/ 
 Piece Piezas::dropPiece(int column)
 {
-    return Blank;
+  if(turn == X) {
+    turn = O;
+  } else {
+    turn = X;
+  }
+  if(!(column < 0 || column >= BOARD_COLS)) {
+    for(int i = 0; i < BOARD_ROWS; i++) {
+      if(board[i][column] == Blank) {
+        // since we toggle whose turn it is above, place the opposite turn
+        board[i][column] = ((turn == X) ? O : X); 
+        return board[i][column];
+      }
+    }
+  } else {
+    // invalid column
+    return Invalid;
+  }
+  // no column available
+  return Blank;
 }
 
 /**
@@ -51,7 +81,12 @@ Piece Piezas::dropPiece(int column)
 **/
 Piece Piezas::pieceAt(int row, int column)
 {
-    return Blank;
+  if(!(column < 0 || column >= BOARD_COLS)) {
+    if(!(row < 0 || row >= BOARD_ROWS)) {
+      return board[row][column];
+    }
+  }
+  return Invalid;
 }
 
 /**
@@ -65,5 +100,61 @@ Piece Piezas::pieceAt(int row, int column)
 **/
 Piece Piezas::gameState()
 {
+  int max_X, max_O = 0;
+
+  // check horizontal victories
+  for(int i = 0; i < BOARD_ROWS; i++) {
+    for(int j = 0; j < BOARD_COLS; j++) {
+    int cur_X, cur_O = 0;
+      if(board[i][j] != X || board[i][j] != O) {
+        break;
+      }
+      if(board[i][j] == X) {
+        cur_X++;
+        if(cur_X > max_X) {
+          max_X = cur_X;
+        }
+        cur_O = 0;
+      }
+      if(board[i][j] == O) {
+        cur_O++;
+        if(cur_O > max_O) {
+          max_O = cur_O;
+        }
+        cur_X = 0;
+      }
+    }
+  }
+
+  // check vertical victories
+  for(int i = 0; i < BOARD_COLS; i++) {
+    for(int j = 0; j < BOARD_ROWS; j++) {
+    int cur_X, cur_O = 0;
+      if(board[i][j] == X) {
+        cur_X++;
+        if(cur_X > max_X) {
+          max_X = cur_X;
+        }
+        cur_O = 0;
+      }
+      if(board[i][j] == O) {
+        cur_O++;
+        if(cur_O > max_O) {
+          max_O = cur_O;
+        }
+        cur_X = 0;
+      }
+    }
+  }
+  if(max_X > max_O) {
+    return X;
+  }
+  if(max_O > max_X) {
+    return O;
+  }
+  if(max_X > 0) {
+    // tie
     return Blank;
+  }
+  return Invalid;
 }
