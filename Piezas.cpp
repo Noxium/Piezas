@@ -146,10 +146,7 @@ Piece Piezas::gameState()
   if(max_O > max_X) {
     return O;
   }
-  if(max_X > 0) {
-    // tie
-    return Blank;
-  }
-  return Invalid;
+  // tie
+  return Blank;
 }
 
