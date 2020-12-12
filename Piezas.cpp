@@ -92,23 +92,25 @@ Piece Piezas::pieceAt(int row, int column)
 **/
 Piece Piezas::gameState()
 {
-  int max_X, max_O = 0;
+  int max_X = 0;
+  int max_O = 0;
 
-  // check horizontal victories
+  // test horizontally
   for(int i = 0; i < BOARD_ROWS; i++) {
+    int cur_X = 0;
+    int cur_O = 0;
     for(int j = 0; j < BOARD_COLS; j++) {
-    int cur_X, cur_O = 0;
-      if(board[i][j] != X || board[i][j] != O) {
-        break;
+      if(pieceAt(i, j) == Blank) {
+        return Invalid;
       }
-      if(board[i][j] == X) {
+      if(pieceAt(i, j) == X) {
         cur_X++;
         if(cur_X > max_X) {
           max_X = cur_X;
         }
         cur_O = 0;
       }
-      if(board[i][j] == O) {
+      if(pieceAt(i, j) == O) {
         cur_O++;
         if(cur_O > max_O) {
           max_O = cur_O;
@@ -117,19 +119,19 @@ Piece Piezas::gameState()
       }
     }
   }
-
-  // check vertical victories
+  // test vertically
   for(int i = 0; i < BOARD_COLS; i++) {
+    int cur_X = 0;
+    int cur_O = 0;
     for(int j = 0; j < BOARD_ROWS; j++) {
-    int cur_X, cur_O = 0;
-      if(board[i][j] == X) {
+      if(pieceAt(j, i) == X) {
         cur_X++;
         if(cur_X > max_X) {
           max_X = cur_X;
         }
         cur_O = 0;
       }
-      if(board[i][j] == O) {
+      if(pieceAt(j, i) == O) {
         cur_O++;
         if(cur_O > max_O) {
           max_O = cur_O;
@@ -150,3 +152,4 @@ Piece Piezas::gameState()
   }
   return Invalid;
 }
+
